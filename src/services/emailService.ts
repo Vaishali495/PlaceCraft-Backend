@@ -62,6 +62,7 @@ export const sendVerificationEmail = async (
   };
 
   await transporter.sendMail(mailOptions);
+  console.log("mail sent to email: ",email);
 };
 
 export default transporter;

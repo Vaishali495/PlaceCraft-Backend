@@ -76,7 +76,7 @@ export const registerStudent = async (req: Request, res: Response) => {
     await session.commitTransaction();
     session.endSession();
 
-    sendVerificationEmail(email, token);
+    await sendVerificationEmail(email, token);
 
     const resData = {
       user: {
@@ -153,8 +153,7 @@ export const registerTpo = async (req: Request, res: Response) => {
 
     await user.save();
 
-    sendVerificationEmail(email, token);
-    console.log("verification token sent: ", token);
+    await sendVerificationEmail(email, token);
 
     const resData = {
       user: {
