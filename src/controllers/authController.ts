@@ -11,6 +11,7 @@ import jwt from "jsonwebtoken";
 import mongoose from "mongoose";
 
 export const registerStudent = async (req: Request, res: Response) => {
+  console.log("in register student");
   const session = await mongoose.startSession();
   session.startTransaction();
 
@@ -76,7 +77,13 @@ export const registerStudent = async (req: Request, res: Response) => {
     await session.commitTransaction();
     session.endSession();
 
-    await sendVerificationEmail(email, token);
+    // await sendVerificationEmail(email, token);
+    try {
+      await sendVerificationEmail(email, token);
+    } catch (emailError) {
+      console.error("Failed to send verification email:", emailError);
+      // Email fail hone par bhi database User saved rehga, aur registration response success hi jayega!
+    }
 
     const resData = {
       user: {
@@ -117,6 +124,7 @@ export const registerStudent = async (req: Request, res: Response) => {
 
 export const registerTpo = async (req: Request, res: Response) => {
   try {
+    console.log("in register tpo");
     const { name, email, password, role, organization, designation } = req.body as TpoRegisterInput;
 
     const normalizedEmail = email.toLowerCase().trim();
@@ -153,7 +161,13 @@ export const registerTpo = async (req: Request, res: Response) => {
 
     await user.save();
 
-    await sendVerificationEmail(email, token);
+    // await sendVerificationEmail(email, token);
+    try {
+      await sendVerificationEmail(email, token);
+    } catch (emailError) {
+      console.error("Failed to send verification email:", emailError);
+      // Email fail hone par bhi database User saved rehga, aur registration response success hi jayega!
+    }
 
     const resData = {
       user: {
@@ -190,6 +204,7 @@ export const registerTpo = async (req: Request, res: Response) => {
 
 export const verifyEmail = async (req: Request, res: Response) => {
   try {
+    console.log("in verify email");
     const { token } = req.query as EmailVerifyInput;
 
     if (!token || typeof token !== "string") {
@@ -235,6 +250,7 @@ export const verifyEmail = async (req: Request, res: Response) => {
 
 export const resendVerificationEmail = async (req: Request, res: Response) => {
   try {
+    console.log("in resend verification email");
     const { email } = req.body as ResendVerificationInput;
     if (!email) {
       return res.status(400).json({
@@ -285,6 +301,7 @@ export const resendVerificationEmail = async (req: Request, res: Response) => {
 
 export const loginUser = async (req: Request, res: Response) => {
   try {
+    console.log("in login user");
     const { identifier, password, activeTab } = req.body as LoginInput;
 
     const normalizedIdentifier = identifier.trim();

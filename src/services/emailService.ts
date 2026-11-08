@@ -25,6 +25,7 @@ export const sendVerificationEmail = async (
   email: string,
   token: string,
 ) => {
+  console.log("In sendVerification Email");
   const verificationUrl = `${frontendUrl}/verify-email?token=${encodeURIComponent(token)}`;
 
   const mailOptions = {
