@@ -77,13 +77,10 @@ export const registerStudent = async (req: Request, res: Response) => {
     await session.commitTransaction();
     session.endSession();
 
-    // await sendVerificationEmail(email, token);
-    try {
-      await sendVerificationEmail(email, token);
-    } catch (emailError) {
+    // sendVerificationEmail(email, token);
+    sendVerificationEmail(email, token).catch((emailError) => {
       console.error("Failed to send verification email:", emailError);
-      // Email fail hone par bhi database User saved rehga, aur registration response success hi jayega!
-    }
+    });
 
     const resData = {
       user: {
@@ -161,13 +158,10 @@ export const registerTpo = async (req: Request, res: Response) => {
 
     await user.save();
 
-    // await sendVerificationEmail(email, token);
-    try {
-      await sendVerificationEmail(email, token);
-    } catch (emailError) {
+    // sendVerificationEmail(email, token);
+    sendVerificationEmail(email, token).catch((emailError) => {
       console.error("Failed to send verification email:", emailError);
-      // Email fail hone par bhi database User saved rehga, aur registration response success hi jayega!
-    }
+    });
 
     const resData = {
       user: {
