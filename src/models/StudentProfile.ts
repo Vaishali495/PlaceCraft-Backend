@@ -3,7 +3,7 @@ import mongoose, { Schema } from "mongoose";
 export interface IStudentProfile  {
   userId: mongoose.Types.ObjectId;
   studentId: string;
-  department: string;
+  course: string;
   graduationYear?: number;
   cgpa?: number;
   backlogCount: number;
@@ -33,7 +33,7 @@ const studentProfileSchema = new Schema<IStudentProfile>(
         unique: true,
         trim: true,
     },
-    department:{
+    course:{
         type: String,
         required: true,
         trim: true,

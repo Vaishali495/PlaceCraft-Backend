@@ -12,11 +12,21 @@ import mongoose from "mongoose";
 
 export const registerStudent = async (req: Request, res: Response) => {
   console.log("in register student");
+
+  // Check whether the requested role is student
+  if (req.body.role !== "student") {
+    return res.status(400).json({
+      success: false,
+      message: "Invalid role. This endpoint is only for student registration.",
+    });
+  }
+
   const session = await mongoose.startSession();
   session.startTransaction();
 
   try {
-    const { name, email, rollNumber, password, role, department } = req.body as StudentRegisterInput;
+    console.log("req.body: ", req.body);
+    const { name, email, rollNumber, password, role, course } = req.body as StudentRegisterInput;
 
     const normalizedEmail = email.toLowerCase().trim();
     const normalizedRollNumber = rollNumber.trim().toUpperCase();
@@ -29,6 +39,7 @@ export const registerStudent = async (req: Request, res: Response) => {
       null,
       { session },
     );
+    console.log("existingUser", existingUser);
 
     if (existingUser) {
       await session.abortTransaction();
@@ -46,7 +57,7 @@ export const registerStudent = async (req: Request, res: Response) => {
       email: normalizedEmail,
       rollNumber: normalizedRollNumber,
       passwordHash,
-      role,
+      role: "student" as const,
     };
 
     // Create User document inside transaction (returns array)
@@ -59,7 +70,7 @@ export const registerStudent = async (req: Request, res: Response) => {
     const studentProfileData = {
       userId: user._id,
       studentId: normalizedRollNumber,
-      department: department,
+      course: course,
     };
     const [studentProfile] = await StudentProfile.create([studentProfileData], { session });
 
@@ -88,7 +99,7 @@ export const registerStudent = async (req: Request, res: Response) => {
         name: user.name,
         email: user.email,
         rollNumber: user.rollNumber,
-        department: studentProfile?.department,
+        course: studentProfile?.course,
         role: user.role,
       },
     };
@@ -120,6 +131,13 @@ export const registerStudent = async (req: Request, res: Response) => {
 };
 
 export const registerTpo = async (req: Request, res: Response) => {
+  // Check whether the requested role is tpo
+  if (req.body.role !== "tpo") {
+    return res.status(400).json({
+      success: false,
+      message: "Invalid role. This endpoint is only for TPO registration.",
+    });
+  }
   try {
     console.log("in register tpo");
     const { name, email, password, role, organization, designation } = req.body as TpoRegisterInput;
@@ -146,7 +164,7 @@ export const registerTpo = async (req: Request, res: Response) => {
       passwordHash,
       organization,
       designation,
-      role,
+      role: "tpo" as const,
     };
 
     const user = await User.create(userData);
@@ -200,6 +218,7 @@ export const verifyEmail = async (req: Request, res: Response) => {
   try {
     console.log("in verify email");
     const { token } = req.query as EmailVerifyInput;
+    console.log("token: ", token);
 
     if (!token || typeof token !== "string") {
       return res.status(400).json({
@@ -210,16 +229,21 @@ export const verifyEmail = async (req: Request, res: Response) => {
 
     // Hash the incoming raw token to match the database stored token
     const hashedToken = crypto.createHash("sha256").update(token).digest("hex");
+    console.log("hashed TOken: ", hashedToken);
 
     const user = await User.findOne({
       emailVerificationToken: hashedToken,
       emailVerificationExpires: { $gt: new Date() },
     }).select("+emailVerificationToken +emailVerificationExpires");
 
+    console.log("user: ", user);
     if (!user) {
+      console.log("am in if");
       return res.status(400).json({
         success: false,
-        message: "Invalid or expired verification token.",
+        // message: "Invalid or expired verification token.",
+        message:
+          "This verification link is invalid or has already been used. Please log in to check your email verification status. If your email is not verified, you can request a new verification email.",
       });
     }
 
@@ -246,20 +270,14 @@ export const resendVerificationEmail = async (req: Request, res: Response) => {
   try {
     console.log("in resend verification email");
     const { email } = req.body as ResendVerificationInput;
-    if (!email) {
-      return res.status(400).json({
-        success: false,
-        message: "Email is required.",
-      });
-    }
     const normalizedEmail = email.toLowerCase().trim();
-    const user = await User.findOne({ email: normalizedEmail });
+    const user = await User.findOne({ email: normalizedEmail }).select("+emailVerificationToken +emailVerificationExpires");
 
     if (!user) {
       // Return 200 for security so attackers can't enumerate valid emails
       return res.status(200).json({
         success: true,
-        message: "If an account exists with this email, a verification link has been sent(not found).",
+        message: "If an account exists with this email, a verification link has been sent(not registered).",
       });
     }
 
@@ -267,6 +285,14 @@ export const resendVerificationEmail = async (req: Request, res: Response) => {
       return res.status(400).json({
         success: false,
         message: "This email is already verified.",
+      });
+    }
+
+    // Check if a token exists and is not expired
+    if (user.emailVerificationToken && user.emailVerificationExpires && user.emailVerificationExpires > new Date()) {
+      return res.status(400).json({
+        success: false,
+        message: "Your current verification link is still valid. Please check your Gmail/inbox.",
       });
     }
 
@@ -338,10 +364,10 @@ export const loginUser = async (req: Request, res: Response) => {
       });
     }
 
-    let department: string | undefined;
+    let course: string | undefined;
     if (user.role === "student") {
       const studentProfile = await StudentProfile.findOne({ userId: user._id });
-      department = studentProfile?.department;
+      course = studentProfile?.course;
     }
 
     const jwtSecret = process.env.JWT_SECRET || "placecraft_fallback_secret_key";
@@ -363,7 +389,7 @@ export const loginUser = async (req: Request, res: Response) => {
         email: user.email,
         role: user.role,
         rollNumber: user.rollNumber,
-        department: department,
+        course: course,
         organization: user.organization,
         designation: user.designation,
       },

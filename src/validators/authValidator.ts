@@ -23,7 +23,7 @@ const studentSchema = z.object({
   ...commonFields,
   role: z.literal("student"),
   rollNumber: z.string().trim().min(1, "Roll number is required"),
-  department: z.string().trim().min(1, "Department is required"),
+  course: z.string().trim().min(1, "course is required"),
 });
 
 const tpoSchema = z.object({
