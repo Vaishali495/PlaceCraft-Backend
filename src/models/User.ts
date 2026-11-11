@@ -1,5 +1,5 @@
 import mongoose, { Schema } from "mongoose";
-export type UserRole = "student" | "tpo";
+import { UserRole } from "../utils/enums.js";
 
 export interface IUser {
   name: string;
@@ -44,8 +44,8 @@ const userSchema = new Schema<IUser>(
     },
     role: {
       type: String,
-      enum: ["student", "tpo"],
-      default: "student",
+      enum: Object.values(UserRole),
+      default: UserRole.STUDENT,
       required: true,
     },
     organization: {
