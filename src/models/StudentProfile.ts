@@ -1,5 +1,5 @@
 import mongoose, { Schema } from "mongoose";
-import { BTechField, SemesterStandingStatus, type AcademicVerificationStatus } from "../utils/enums.js";
+import { AcademicVerificationStatus, BTechField, SemesterStandingStatus } from "../utils/enums.js";
 
 export interface ISemesterRecord {
   semesterNumber: number; // e.g., 1, 2, 3...
@@ -106,8 +106,8 @@ const studentProfileSchema = new Schema<IStudentProfile>(
     academicVerification: {
       status: {
         type: String,
-        enum: ["pending", "verified", "rejected"],
-        default: "pending",
+        enum: Object.values(AcademicVerificationStatus),
+        default: "Pending",
       },
       verifiedBy: {
         type: Schema.Types.ObjectId,

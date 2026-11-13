@@ -9,12 +9,13 @@ import { sendVerificationEmail } from "../services/emailService.js";
 import jwt from "jsonwebtoken";
 
 import mongoose from "mongoose";
+import { UserRole } from "../utils/enums.js";
 
 export const registerStudent = async (req: Request, res: Response) => {
   console.log("in register student");
 
   // Check whether the requested role is student
-  if (req.body.role !== "student") {
+  if (req.body.role !== UserRole.STUDENT) {
     return res.status(400).json({
       success: false,
       message: "Invalid role. This endpoint is only for student registration.",
@@ -57,7 +58,7 @@ export const registerStudent = async (req: Request, res: Response) => {
       email: normalizedEmail,
       rollNumber: normalizedRollNumber,
       passwordHash,
-      role: "student" as const,
+      role: UserRole.STUDENT,
     };
 
     // Create User document inside transaction (returns array)
@@ -164,7 +165,7 @@ export const registerTpo = async (req: Request, res: Response) => {
       passwordHash,
       organization,
       designation,
-      role: "tpo" as const,
+      role: UserRole.TPO,
     };
 
     const user = await User.create(userData);

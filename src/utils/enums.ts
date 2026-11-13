@@ -33,9 +33,9 @@ export enum BTechFieldCode {
 
 // Academic Verification Status (TPO Endorsement Seal)
 export enum AcademicVerificationStatus {
-  PENDING = "pending",
-  VERIFIED = "verified",
-  REJECTED = "rejected",
+  PENDING = "Pending",
+  VERIFIED = "Verified",
+  REJECTED = "Rejected",
 }
 
 // Semester Academic Standing Status

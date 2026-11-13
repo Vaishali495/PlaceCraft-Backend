@@ -1,3 +1,5 @@
+import fs from "fs";
+import path from "path";
 import type { Request, Response } from "express";
 import { StudentRepository } from "../repositories/studentRepository.js";
 
@@ -37,6 +39,8 @@ export const getStudentData = async (req: Request, res: Response) => {
 export const editStudentProfile = async (req: Request, res: Response) => {
   try {
     console.log("am in edit student profile");
+    console.log("req.body: ",req.body);
+    console.log("req.file: ",req.file);
     const userId = (req as any).user?.id || req.body.userId;
     if (!userId) {
       return res.status(400).json({
@@ -55,18 +59,29 @@ export const editStudentProfile = async (req: Request, res: Response) => {
     const updatePayload: any = {
       course,
       field,
-      graduationYear: Number(graduationYear),
-      cgpa: Number(cgpa),
-      backlogCount: Number(backlogCount),
+      graduationYear: graduationYear ? Number(graduationYear) : undefined,
+      cgpa: cgpa !== undefined && cgpa !== "" ? Number(cgpa) : undefined,
+      backlogCount: Number(backlogCount ?? 0),
       schooling: parsedSchooling,
       semesterRecords: parsedSemesterRecords,
       skills: parsedSkills,
     };
 
-    if ((req as any).file) {
+    if (req.file) {
+      // Purani file delete karne ke liye (optional cleanup)
+      const existingProfile = await StudentRepository.findProfileByUserId(userId);
+      if (existingProfile?.resume?.publicId) {
+        const oldFilePath = path.join(process.cwd(), "uploads", "resumes", existingProfile.resume.publicId);
+        if (fs.existsSync(oldFilePath)) {
+          fs.unlinkSync(oldFilePath);
+        }
+      }
+
+      const baseUrl = `${req.protocol}://${req.get("host")}`;
       updatePayload.resume = {
-        url: (req as any).file.path,
-        publicId: (req as any).file.filename,
+        url: `${baseUrl}/uploads/resumes/${req.file.filename}`,
+        publicId: req.file.filename,
+        updatedAt: new Date(),
       };
     }
 

@@ -27,13 +27,13 @@ export class StudentRepository {
     userId: string | mongoose.Types.ObjectId,
     updateData: Partial<IStudentProfile>,
   ): Promise<IStudentProfile | null> {
-    return await StudentProfile.findOneAndUpdate({ userId }, { $set: updateData }, { new: true, runValidators: true, upsert: true });
+    return await StudentProfile.findOneAndUpdate({ userId }, { $set: updateData }, { returnDocument: "after", runValidators: true, upsert: true });
   }
 
   /**
    * Find all verified student profiles for TPO Directory Listing
    */
-//   static async findAllVerifiedStudents() {
-//     return await StudentProfile.find({ "academicVerification.status": "verified" }).populate("userId", "name email rollNumber").sort({ cgpa: -1 });
-//   }
+  //   static async findAllVerifiedStudents() {
+  //     return await StudentProfile.find({ "academicVerification.status": "verified" }).populate("userId", "name email rollNumber").sort({ cgpa: -1 });
+  //   }
 }

@@ -31,3 +31,5 @@ tmp/
 temp/
 *.tmp
 temp.ts
+
+/uploads
