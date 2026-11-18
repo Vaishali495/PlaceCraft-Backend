@@ -1,6 +1,7 @@
 import type mongoose from "mongoose";
-import User, { type IUser } from "../models/User.js";
-import StudentProfile, { type IStudentProfile } from "../models/StudentProfile.js";
+import User from "../models/User.js";
+import StudentProfile from "../models/StudentProfile.js";
+import type { IStudentProfile, IUser } from "../types/index.js";
 
 export class StudentRepository {
   /**
@@ -25,7 +26,7 @@ export class StudentRepository {
    */
   static async updateProfileByUserId(
     userId: string | mongoose.Types.ObjectId,
-    updateData: Partial<IStudentProfile>,
+    updateData: Partial<IStudentProfile> | Record<string, unknown>,
   ): Promise<IStudentProfile | null> {
     return await StudentProfile.findOneAndUpdate({ userId }, { $set: updateData }, { returnDocument: "after", runValidators: true, upsert: true });
   }

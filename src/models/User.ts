@@ -1,19 +1,6 @@
 import mongoose, { Schema } from "mongoose";
 import { UserRole } from "../utils/enums.js";
-
-export interface IUser {
-  name: string;
-  email: string;
-  rollNumber?: string;
-  passwordHash: string;
-  role: UserRole;
-  organization?: string;
-  designation?: string;
-  // isActive: boolean;
-  isEmailVerified: boolean;
-  emailVerificationToken?: string | null;
-  emailVerificationExpires?: Date | null;
-}
+import type { IUser } from "../types/index.js";
 
 const userSchema = new Schema<IUser>(
   {

@@ -45,14 +45,6 @@ export enum SemesterStandingStatus {
   ONGOING = "Ongoing",
 }
 
-// Placement Drive Package Tiers
-export enum DriveTierCategory {
-  CORE_TIER = "Core Tier",
-  FINTECH_TIER = "FinTech Tier",
-  DREAM_TIER = "Dream Tier",
-  SUPER_DREAM_TIER = "Super Dream Tier",
-}
-
 // Recruitment Drive Status
 export enum DriveStatus {
   OPEN = "Open",
@@ -60,19 +52,25 @@ export enum DriveStatus {
   ARCHIVED = "Archived",
 }
 
-// Recruitment Pipeline Application Status
-export enum ApplicationStatus {
-  APPLIED = "Applied",
-  OA_PENDING = "OA Pending",
-  SHORTLISTED = "Shortlisted",
-  INTERVIEW_SCHEDULED = "Interview Scheduled",
-  OFFERED = "Offered",
-  REJECTED = "Rejected",
+export enum WorkMode {
+  ON_SITE = "Work from Office",
+  REMOTE = "Work from Home",
+  HYBRID = "Hybrid",
 }
 
+// Recruitment Pipeline Application Status
+// export enum ApplicationStatus {
+//   APPLIED = "Applied",
+//   OA_PENDING = "OA Pending",
+//   SHORTLISTED = "Shortlisted",
+//   INTERVIEW_SCHEDULED = "Interview Scheduled",
+//   OFFERED = "Offered",
+//   REJECTED = "Rejected",
+// }
+
 // Student Overall Placement Status ("One Student, One Offer" Policy)
-export enum StudentPlacementStatus {
-  UNPLACED = "Unplaced",
-  PLACED = "Placed",
-  BLOCKED = "Blocked",
-}
+// export enum StudentPlacementStatus {
+//   UNPLACED = "Unplaced",
+//   PLACED = "Placed",
+//   BLOCKED = "Blocked",
+// }

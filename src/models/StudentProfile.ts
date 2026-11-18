@@ -1,42 +1,6 @@
 import mongoose, { Schema } from "mongoose";
 import { AcademicVerificationStatus, BTechField, SemesterStandingStatus } from "../utils/enums.js";
-
-export interface ISemesterRecord {
-  semesterNumber: number; // e.g., 1, 2, 3...
-  sgpa: number;
-  status: SemesterStandingStatus;
-}
-
-export interface IStudentProfile  {
-  userId: mongoose.Types.ObjectId;
-  studentId: string;
-  course: string;
-  field?: BTechField;
-  graduationYear?: number;
-  cgpa?: number;
-  backlogCount: number;
-  skills: string[];
-
-  schooling?: {
-    tenthPercentage?: number;
-    tenthBoard?: string; // e.g., "CBSE"
-    twelfthPercentage?: number;
-    twelfthBoard?: string;
-  };
-
-  semesterRecords?: ISemesterRecord[];
-
-  academicVerification: {
-    status:AcademicVerificationStatus;
-    verifiedBy?: mongoose.Types.ObjectId | null;
-    verifiedAt?: Date | null;
-  };
-  resume?: {
-    url: string;
-    publicId: string;
-    updatedAt?: Date;
-  } | null;
-}
+import type { ISemesterRecord, IStudentProfile } from "../types/index.js";
 
 const semesterRecordSchema = new Schema<ISemesterRecord>(
   {
@@ -70,7 +34,7 @@ const studentProfileSchema = new Schema<IStudentProfile>(
     field:{
       type: String,
       enum: Object.values(BTechField),
-      default: BTechField.CSE,
+      // default: BTechField.CSE,
     },
     graduationYear: {
       type: Number,
