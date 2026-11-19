@@ -59,14 +59,14 @@ export enum WorkMode {
 }
 
 // Recruitment Pipeline Application Status
-// export enum ApplicationStatus {
-//   APPLIED = "Applied",
-//   OA_PENDING = "OA Pending",
-//   SHORTLISTED = "Shortlisted",
-//   INTERVIEW_SCHEDULED = "Interview Scheduled",
-//   OFFERED = "Offered",
-//   REJECTED = "Rejected",
-// }
+export enum ApplicationStatus {
+  APPLIED = "Applied",
+  OA_PENDING = "OA Pending",
+  SHORTLISTED = "Shortlisted",
+  INTERVIEW_SCHEDULED = "Interview Scheduled",
+  OFFERED = "Offered",
+  REJECTED = "Rejected",
+}
 
 // Student Overall Placement Status ("One Student, One Offer" Policy)
 // export enum StudentPlacementStatus {

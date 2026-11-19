@@ -1,7 +1,14 @@
-import type mongoose from "mongoose";
-import type { AcademicVerificationStatus, BTechField, DriveStatus, SemesterStandingStatus, UserRole, WorkMode } from "../utils/enums.js";
+import mongoose, { Document } from "mongoose";
+import type {
+  AcademicVerificationStatus,
+  ApplicationStatus,
+  BTechField,
+  DriveStatus,
+  SemesterStandingStatus,
+  UserRole,
+  WorkMode,
+} from "../utils/enums.js";
 
-// 1. Auth & User Interfaces
 export interface IUser {
   name: string;
   email: string;
@@ -15,7 +22,6 @@ export interface IUser {
   emailVerificationExpires?: Date | null;
 }
 
-// 2. Student Profile Interfaces
 export interface ISemesterRecord {
   semesterNumber: number;
   sgpa: number;
@@ -67,10 +73,10 @@ export interface CreateTpoAccountParams extends Pick<
 export interface IDrive {
   companyName: string;
   roleTitle: string;
-  jobType: string;    // e.g. "Full Time + PPO"
+  jobType: string; // e.g. "Full Time + PPO"
   location: string;
   batchYear: number;
-  ctcTotal: number;   // in LPA (e.g. 44.0)
+  ctcTotal: number; // in LPA (e.g. 44.0)
   eligibilityCriteria: {
     minCgpa: number;
     allowedCourses: string[];
@@ -80,8 +86,19 @@ export interface IDrive {
   requiredSkills: string[];
   registrationDeadline: Date;
   description: string;
-  shiftTimings?: string;    // Optional exact hours e.g. "10:00 AM - 7:00 PM IST"
+  shiftTimings?: string; // Optional exact hours e.g. "10:00 AM - 7:00 PM IST"
   workMode?: WorkMode;
   status: DriveStatus;
   createdBy: mongoose.Types.ObjectId;
+}
+
+export interface IApplication extends Document {
+  studentId: mongoose.Types.ObjectId;
+  driveId: mongoose.Types.ObjectId;
+  appliedResumeUrl: string;
+  // currentStage: number;
+  status: ApplicationStatus;
+  tpoRemarks?: string;
+  createdAt: Date;
+  updatedAt: Date;
 }

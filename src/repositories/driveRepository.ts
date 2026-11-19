@@ -18,4 +18,8 @@ export class DriveRepository {
   static async findStudentProfileByUserId(userId: string | mongoose.Types.ObjectId) {
     return await StudentProfile.findOne({ userId }).lean();
   }
+
+  static async findDriveById(driveId: string | mongoose.Types.ObjectId) {
+    return await Drive.findById(driveId).lean();
+  }
 }
