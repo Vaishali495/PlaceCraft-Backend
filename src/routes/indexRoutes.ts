@@ -3,6 +3,7 @@ import authRoutes from "./authRoutes.js";
 import studentRoutes from "./studentRoutes.js";
 import driveRoutes from "./driveRoutes.js"
 import applicationRoutes from "./applicationRoutes.js"
+import tpoRoutes from "./tpoRoutes.js";
 
 const router = Router();
 
@@ -10,5 +11,6 @@ router.use("/auth",authRoutes);
 router.use("/student",studentRoutes);
 router.use("/drive",driveRoutes);
 router.use("/application",applicationRoutes);
+router.use("/tpo", tpoRoutes);
 
 export default router;

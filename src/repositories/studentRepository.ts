@@ -1,7 +1,8 @@
-import type mongoose from "mongoose";
+import mongoose from "mongoose";
 import User from "../models/User.js";
 import StudentProfile from "../models/StudentProfile.js";
 import type { IStudentProfile, IUser } from "../types/index.js";
+import { AcademicVerificationStatus } from "../utils/enums.js";
 
 export class StudentRepository {
   /**
@@ -29,6 +30,39 @@ export class StudentRepository {
     updateData: Partial<IStudentProfile> | Record<string, unknown>,
   ): Promise<IStudentProfile | null> {
     return await StudentProfile.findOneAndUpdate({ userId }, { $set: updateData }, { returnDocument: "after", runValidators: true, upsert: true });
+  }
+
+  /**
+   * Find Student Profile by its profile document _id
+   */
+  static async findProfileById(profileId: string) {
+    return await StudentProfile.findById(profileId).lean();
+  }
+
+  /**
+   * Find all student profiles with populated User info for TPO verification
+   */
+  static async findAllStudentsForTpo() {
+    return await StudentProfile.find({}).populate("userId", "name email rollNumber role isEmailVerified").sort({ createdAt: -1 }).lean();
+  }
+
+  /**
+   * Update academicVerification status for a student profile by profile _id
+   */
+  static async updateAcademicVerificationById(profileId: string, status: AcademicVerificationStatus, verifiedBy: string) {
+    const isVerified = status === AcademicVerificationStatus.VERIFIED;
+
+    return await StudentProfile.findByIdAndUpdate(
+      profileId,
+      {
+        $set: {
+          "academicVerification.status": status,
+          "academicVerification.verifiedBy": isVerified ? verifiedBy : null,
+          "academicVerification.verifiedAt": isVerified ? new Date() : null,
+        },
+      },
+      { returnDocument: "after", runValidators: true },
+    ).populate("userId", "name email rollNumber role isEmailVerified");
   }
 
   /**

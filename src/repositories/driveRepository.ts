@@ -9,10 +9,7 @@ export class DriveRepository {
   }
 
   static async findDrives(filter: Record<string, unknown> = {}) {
-    return await Drive.find(filter)
-      .populate("createdBy", "name email organization designation")
-      .sort({ createdAt: -1 })
-      .lean();
+    return await Drive.find(filter).populate("createdBy", "name email organization designation").sort({ createdAt: -1 }).lean();
   }
 
   static async findStudentProfileByUserId(userId: string | mongoose.Types.ObjectId) {
@@ -21,5 +18,13 @@ export class DriveRepository {
 
   static async findDriveById(driveId: string | mongoose.Types.ObjectId) {
     return await Drive.findById(driveId).lean();
+  }
+
+  static async updateDriveById(driveId: string | mongoose.Types.ObjectId, updateData: Partial<IDrive>) {
+    return await Drive.findByIdAndUpdate(driveId, { $set: updateData }, { new: true, runValidators: true }).lean();
+  }
+
+  static async deleteDriveById(driveId: string | mongoose.Types.ObjectId) {
+    return await Drive.findByIdAndDelete(driveId).lean();
   }
 }

@@ -71,7 +71,7 @@ const studentProfileSchema = new Schema<IStudentProfile>(
       status: {
         type: String,
         enum: Object.values(AcademicVerificationStatus),
-        default: "Pending",
+        default: AcademicVerificationStatus.PENDING,
       },
       verifiedBy: {
         type: Schema.Types.ObjectId,

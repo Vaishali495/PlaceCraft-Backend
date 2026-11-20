@@ -21,16 +21,6 @@ export enum BTechField {
   OTHER = "Other / General Engineering",
 }
 
-export enum BTechFieldCode {
-  CSE = "CSE",
-  IT = "IT",
-  ECE = "ECE",
-  MECH = "MECH",
-  CIVIL = "CIVIL",
-  AI_ML = "AI/ML",
-  OTHER = "OTHER",
-}
-
 // Academic Verification Status (TPO Endorsement Seal)
 export enum AcademicVerificationStatus {
   PENDING = "Pending",
